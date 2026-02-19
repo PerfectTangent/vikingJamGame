@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://d3nymvrvi7cc0"]
+
+[ext_resource type="Script" uid="uid://cxxgaofkj80fn" path="res://src/GameLogic/Nodes/MapNodeRepositoryNode.cs" id="2_dq0en"]
+[ext_resource type="Texture2D" uid="uid://bhi4nefpf3gs6" path="res://resources/map-generator-test/starting_village.png" id="2_pj6fq"]
+[ext_resource type="Script" uid="uid://bfi7u3adqooxv" path="res://src/GameLogic/CameraController.cs" id="3_hm562"]
+[ext_resource type="Texture2D" uid="uid://yiry6jvel2q4" path="res://resources/kenney-cartography/Textures/parchmentBasic.png" id="4_hm562"]
+[ext_resource type="Script" uid="uid://7kb2xf0kvike" path="res://src/GameLogic/Nodes/NavigationMapGeneratorNode.cs" id="4_x12d8"]
+
+[node name="MapGeneratorTest" type="Node2D" unique_id=1344328876 node_paths=PackedStringArray("GenerateButton", "NodeRepository", "StartingVillage", "NodesRoot")]
+script = ExtResource("4_x12d8")
+GenerateButton = NodePath("CanvasLayer/GenerateButton")
+NodeRepository = NodePath("MapNodeRepositoryNode")
+StartingVillage = NodePath("StartingVillage")
+NodesRoot = NodePath("NodesRoot")
+ConnectionDotColor = Color(0.0627451, 0.28235295, 0.28627452, 1)
+ColumnSpacingX = 320.0
+RowSpacingY = 203.0
+MaxNodesCount = 50
+PeakFrontierWidth = 6
+MaxMergeDistance = 1
+
+[node name="MapNodeRepositoryNode" type="Node" parent="." unique_id=2022444977]
+script = ExtResource("2_dq0en")
+metadata/_custom_type_script = "uid://cxxgaofkj80fn"
+
+[node name="CameraController" type="Node" parent="." unique_id=1572671962 node_paths=PackedStringArray("Camera2D", "StartingVillage")]
+script = ExtResource("3_hm562")
+Camera2D = NodePath("../Camera2D")
+StartingVillage = NodePath("../StartingVillage")
+metadata/_custom_type_script = "uid://bfi7u3adqooxv"
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1528733011]
+repeat_size = Vector2(2048, 2048)
+
+[node name="TextureRect" type="TextureRect" parent="Parallax2D" unique_id=1660720130]
+offset_right = 2048.0
+offset_bottom = 2048.0
+texture = ExtResource("4_hm562")
+stretch_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="StartingVillage" type="Sprite2D" parent="." unique_id=860411522]
+position = Vector2(136, 199)
+texture = ExtResource("2_pj6fq")
+
+[node name="NodesRoot" type="Node2D" parent="." unique_id=1167877491]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=698652418]
+
+[node name="GenerateButton" type="Button" parent="CanvasLayer" unique_id=917856115]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 172.0
+offset_bottom = 50.0
+text = "Regenerate Map"
+metadata/_edit_use_anchors_ = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=851086323]

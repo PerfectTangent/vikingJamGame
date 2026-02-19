@@ -1,0 +1,10 @@
+Kind = "shore"
+Art = "shore.png"
+EventsPool = ["test_event"]
+
+[PossibleNeighbours]
+ocean = 0.1
+village = 0.6
+monastery = 0.3
+forest = 0.6
+swamps = 0.6

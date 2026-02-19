@@ -1,0 +1,18 @@
+﻿Id = "test_event"
+Name = "Test Event"
+Description = "An event made to test"
+
+[[OptionDefinitions]]
+DisplayText = "Try option 1"
+ResolutionText = "Wow, you did option 1"
+Order = 1
+
+[[OptionDefinitions]]
+DisplayText = "Try option 2"
+ResolutionText = "Wow, option 2 is so cool"
+Order = 2
+
+[[OptionDefinitions]]
+DisplayText = "Try option 3"
+ResolutionText = "Option 3 is by far the most creative"
+Order = 3

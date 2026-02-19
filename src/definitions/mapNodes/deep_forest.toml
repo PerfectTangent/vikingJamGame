@@ -1,0 +1,8 @@
+Kind = "deep_forest"
+Art = "deep_forest.png"
+EventsPool = ["test_event"]
+
+[PossibleNeighbours]
+forest = 0.5
+swamps = 0.2
+caves = 0.3

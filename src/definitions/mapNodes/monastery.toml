@@ -1,0 +1,10 @@
+Kind = "monastery"
+Art = "monastery.png"
+EventsPool = ["test_event"]
+
+[PossibleNeighbours]
+village = 0.5
+forest = 0.3
+deep_forest = 0.2
+swamps = 0.1
+monastery = 0.1

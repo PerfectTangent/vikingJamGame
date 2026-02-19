@@ -1,0 +1,7 @@
+Kind = "starting_village"
+Art = "starting_village.png"
+ForcedFirstEvent = "starting_event"
+EventsPool = ["test_event"]
+
+[PossibleNeighbours]
+ocean = 1

@@ -1,0 +1,10 @@
+﻿Kind = "ocean"
+Art = "ocean.png"
+
+EventsPool = [
+    "test_event",
+]
+
+[PossibleNeighbours]
+shore = 0.2
+ocean = 0.6

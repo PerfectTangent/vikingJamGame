@@ -1,0 +1,3 @@
+﻿Kind = "final_boss"
+Art = "final_boss.png"
+ForcedFirstEvent = "final_boss"

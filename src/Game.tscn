@@ -1,3 +1,9 @@
 [gd_scene format=3 uid="uid://ry3n1k1opkho"]
 
-[node name="Game" type="Node2D" unique_id=110598483]
+[ext_resource type="Script" uid="uid://djyal22vnmgsa" path="res://src/Game.cs" id="1_kqvf5"]
+[ext_resource type="PackedScene" uid="uid://d3nymvrvi7cc0" path="res://src/Scenes/MapGeneratorTest.tscn" id="2_lqjwq"]
+
+[node name="Game" type="Node2D" unique_id=1346216071]
+script = ExtResource("1_kqvf5")
+InitialScene = ExtResource("2_lqjwq")
+metadata/_custom_type_script = "uid://djyal22vnmgsa"
