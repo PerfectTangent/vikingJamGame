@@ -1,5 +1,7 @@
 using VikingJamGame.Models;
-using VikingJamGame.Models.GameEvents.Commands;
+using VikingJamGame.Models.GameEvents;
+using VikingJamGame.Models.GameEvents.Conditions;
+using VikingJamGame.Models.GameEvents.Effects;
 using VikingJamGame.Models.GameEvents.Runtime;
 using VikingJamGame.Models.GameEvents.Stats;
 using VikingJamGame.Tests.TestDoubles;
@@ -8,71 +10,76 @@ namespace VikingJamGame.Tests.Models.GameEvents.Runtime;
 
 public sealed class GameEventOptionTests
 {
+    private readonly GameEventEvaluator _evaluator = new();
+
     [Fact]
-    public void IsAvailable_ReturnsFalseWhenRequirementsAreNotMet()
+    public void IsVisible_ReturnsFalseWhenConditionsAreNotMet()
     {
         var playerInfo = new PlayerInfo();
         var gameResources = new GameResources();
         gameResources.AddFood(1);
-        gameResources.AddGold(2);
 
         GameEventOption option = CreateOption(
-            requirements: [new StatAmount(StatId.Food, 2)],
-            costs: [new StatAmount(StatId.Gold, 1)],
-            command: NoopCommand.Instance);
+            visibilityConditions: [new StatThresholdCondition(StatId.Food, 2)],
+            costs: []);
 
-        Assert.False(option.IsAvailable(playerInfo, gameResources));
+        var context = CreateContext(playerInfo, gameResources);
+
+        Assert.False(_evaluator.IsVisible(option, context));
     }
 
     [Fact]
-    public void Execute_PaysCostsAndRunsCommand()
+    public void IsAffordable_ReturnsFalseWhenCostsCannotBePaid()
+    {
+        var playerInfo = new PlayerInfo();
+        var gameResources = new GameResources();
+        gameResources.AddGold(1);
+
+        GameEventOption option = CreateOption(
+            visibilityConditions: [],
+            costs: [new StatAmount(StatId.Gold, 2)]);
+
+        var context = CreateContext(playerInfo, gameResources);
+
+        Assert.False(_evaluator.IsAffordable(option, context));
+    }
+
+    [Fact]
+    public void Apply_PaysCostsAndRunsEffects()
     {
         var playerInfo = new PlayerInfo();
         var gameResources = new GameResources();
         gameResources.AddFood(5);
         gameResources.AddGold(4);
         var command = new RecordingCommand();
-        GameEventOption option = CreateOption(
-            requirements: [new StatAmount(StatId.Food, 2)],
-            costs: [new StatAmount(StatId.Food, 2), new StatAmount(StatId.Gold, 1)],
-            command: command);
 
-        option.Execute(playerInfo, gameResources);
+        GameEventOption option = CreateOption(
+            visibilityConditions: [],
+            costs: [new StatAmount(StatId.Food, 2), new StatAmount(StatId.Gold, 1)],
+            effects: [new CustomCommandEffect(command)]);
+
+        _evaluator.Apply(option, CreateContext(playerInfo, gameResources));
 
         Assert.Equal(3, gameResources.Food);
         Assert.Equal(3, gameResources.Gold);
         Assert.Equal(1, command.ExecuteCalls);
     }
 
-    [Fact]
-    public void Execute_ThrowsWhenOptionIsNotAffordable()
-    {
-        var playerInfo = new PlayerInfo();
-        var gameResources = new GameResources();
-        gameResources.AddFood(1);
-        GameEventOption option = CreateOption(
-            requirements: [new StatAmount(StatId.Food, 1)],
-            costs: [new StatAmount(StatId.Food, 2)],
-            command: NoopCommand.Instance);
-
-        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(
-            () => option.Execute(playerInfo, gameResources));
-
-        Assert.Contains("without being affordable", exception.Message);
-    }
-
     private static GameEventOption CreateOption(
-        IReadOnlyList<StatAmount> requirements,
+        IReadOnlyList<IGameEventCondition> visibilityConditions,
         IReadOnlyList<StatAmount> costs,
-        IEventCommand command) =>
+        IReadOnlyList<IGameEventEffect>? effects = null) =>
         new()
         {
             DisplayText = "Option",
             ResolutionText = "Resolved",
             Order = 1,
             DisplayCosts = true,
-            Requirements = requirements,
+            VisibilityConditions = visibilityConditions,
             Costs = costs,
-            Command = command
+            Effects = effects ?? []
         };
+
+    private static GameEventContext CreateContext(PlayerInfo playerInfo, GameResources gameResources) =>
+        new() { PlayerInfo = playerInfo, GameResources = gameResources };
 }

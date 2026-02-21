@@ -4,80 +4,410 @@
 [ext_resource type="Texture2D" uid="uid://d4bauo1vwnj4q" path="res://resources/ui-icons/two-shadows.png" id="1_ictxw"]
 [ext_resource type="Texture2D" uid="uid://b161h3o84x44s" path="res://resources/ui-icons/grain.png" id="3_1736x"]
 [ext_resource type="Texture2D" uid="uid://ctyyr1w0dl4k5" path="res://resources/ui-icons/coins-pile.png" id="4_knk56"]
+[ext_resource type="Texture2D" uid="uid://chjkdy5itoekb" path="res://resources/kenney-rpg-ui-pack/PNG/panel_brown.png" id="5_panel"]
+[ext_resource type="Texture2D" uid="uid://dofolw0orvdvd" path="res://resources/kenney-rpg-ui-pack/PNG/panelInset_brown.png" id="6_inset"]
 
-[node name="MainGui" type="CanvasLayer" unique_id=390611769 node_paths=PackedStringArray("PopulationLabel", "FoodLabel", "CoinLabel")]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_topbar"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+texture = ExtResource("5_panel")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+modulate_color = Color(0.85, 0.75, 0.6, 0.95)
+
+[sub_resource type="LabelSettings" id="LabelSettings_resource_value"]
+font_size = 18
+font_color = Color(1, 0.95, 0.82, 1)
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_offset = Vector2(1, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_separator"]
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color(0.85, 0.72, 0.45, 0.6)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bottomleft"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+texture = ExtResource("5_panel")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+modulate_color = Color(0.8, 0.7, 0.55, 0.95)
+
+[sub_resource type="LabelSettings" id="LabelSettings_name"]
+font_size = 22
+font_color = Color(1, 0.92, 0.7, 1)
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_offset = Vector2(1, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 13
+font_color = Color(0.82, 0.75, 0.6, 0.8)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_statsinset"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+texture = ExtResource("6_inset")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+modulate_color = Color(0.7, 0.6, 0.45, 0.85)
+
+[sub_resource type="LabelSettings" id="LabelSettings_stat_label"]
+font_size = 12
+font_color = Color(0.9, 0.85, 0.72, 0.9)
+
+[sub_resource type="LabelSettings" id="LabelSettings_stat_value"]
+font_size = 11
+font_color = Color(0.75, 0.7, 0.58, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_str_bar_bg"]
+bg_color = Color(0.15, 0.12, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_str_bar_fill"]
+bg_color = Color(0.75, 0.25, 0.2, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_honor_bar_bg"]
+bg_color = Color(0.15, 0.12, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_honor_bar_fill"]
+bg_color = Color(0.3, 0.55, 0.8, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feats_bar_bg"]
+bg_color = Color(0.15, 0.12, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_feats_bar_fill"]
+bg_color = Color(0.85, 0.7, 0.2, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="MainGui" type="CanvasLayer" unique_id=390611769 node_paths=PackedStringArray("PopulationLabel", "FoodLabel", "CoinLabel", "PopulationContainer", "FoodContainer", "CoinContainer", "NameLabel", "TitleLabel", "NameContainer", "StrBar", "HonorBar", "FeatsBar", "StrValue", "HonorValue", "FeatsValue")]
 script = ExtResource("1_elvp5")
-PopulationLabel = NodePath("VBoxContainer/ColorRect/MarginContainer/HBoxContainer/PopulationContainer/PopulationLabel")
-FoodLabel = NodePath("VBoxContainer/ColorRect/MarginContainer/HBoxContainer/FoodContainer/FoodLabel")
-CoinLabel = NodePath("VBoxContainer/ColorRect/MarginContainer/HBoxContainer/CoinContainer/CoinLabel")
+PopulationLabel = NodePath("TopBar/Panel/MarginContainer/HBoxContainer/PopulationContainer/PopulationLabel")
+FoodLabel = NodePath("TopBar/Panel/MarginContainer/HBoxContainer/FoodContainer/FoodLabel")
+CoinLabel = NodePath("TopBar/Panel/MarginContainer/HBoxContainer/CoinContainer/CoinLabel")
+PopulationContainer = NodePath("TopBar/Panel/MarginContainer/HBoxContainer/PopulationContainer")
+FoodContainer = NodePath("TopBar/Panel/MarginContainer/HBoxContainer/FoodContainer")
+CoinContainer = NodePath("TopBar/Panel/MarginContainer/HBoxContainer/CoinContainer")
+NameLabel = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/NameContainer/NameLabel")
+TitleLabel = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/NameContainer/TitleLabel")
+NameContainer = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/NameContainer")
+StrBar = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/StrRow/StrBar")
+HonorBar = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/HonorRow/HonorBar")
+FeatsBar = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/FeatsRow/FeatsBar")
+StrValue = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/StrRow/StrHeader/StrValue")
+HonorValue = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/HonorRow/HonorHeader/HonorValue")
+FeatsValue = NodePath("BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/FeatsRow/FeatsHeader/FeatsValue")
 metadata/_custom_type_script = "uid://6j05qwx2t0tw"
 
-[node name="Control" type="Control" parent="." unique_id=356889234]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1121216699]
-custom_minimum_size = Vector2(0, 50)
+[node name="TopBar" type="VBoxContainer" parent="." unique_id=1121216699]
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
-size_flags_vertical = 4
 
-[node name="ColorRect" type="ColorRect" parent="VBoxContainer" unique_id=579516120]
+[node name="Panel" type="PanelContainer" parent="TopBar" unique_id=834460668]
 layout_mode = 2
-size_flags_vertical = 3
-color = Color(0.2901961, 0.23137255, 0.17254902, 1)
+theme_override_styles/panel = SubResource("StyleBoxTexture_topbar")
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ColorRect" unique_id=1242192123]
+[node name="MarginContainer" type="MarginContainer" parent="TopBar/Panel" unique_id=463100959]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopBar/Panel/MarginContainer" unique_id=1995478834]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PopulationContainer" type="HBoxContainer" parent="TopBar/Panel/MarginContainer/HBoxContainer" unique_id=1373739338]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TextureRect" type="TextureRect" parent="TopBar/Panel/MarginContainer/HBoxContainer/PopulationContainer" unique_id=265101832]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("1_ictxw")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PopulationLabel" type="Label" parent="TopBar/Panel/MarginContainer/HBoxContainer/PopulationContainer" unique_id=148214914]
+layout_mode = 2
+text = "142"
+label_settings = SubResource("LabelSettings_resource_value")
+
+[node name="Sep1" type="VSeparator" parent="TopBar/Panel/MarginContainer/HBoxContainer" unique_id=1000867041]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
+
+[node name="FoodContainer" type="HBoxContainer" parent="TopBar/Panel/MarginContainer/HBoxContainer" unique_id=347206485]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TextureRect" type="TextureRect" parent="TopBar/Panel/MarginContainer/HBoxContainer/FoodContainer" unique_id=1610763002]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_1736x")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FoodLabel" type="Label" parent="TopBar/Panel/MarginContainer/HBoxContainer/FoodContainer" unique_id=1678209643]
+layout_mode = 2
+text = "142"
+label_settings = SubResource("LabelSettings_resource_value")
+
+[node name="Sep2" type="VSeparator" parent="TopBar/Panel/MarginContainer/HBoxContainer" unique_id=1330081680]
+layout_mode = 2
+theme_override_constants/separation = 8
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
+
+[node name="CoinContainer" type="HBoxContainer" parent="TopBar/Panel/MarginContainer/HBoxContainer" unique_id=670558572]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TextureRect" type="TextureRect" parent="TopBar/Panel/MarginContainer/HBoxContainer/CoinContainer" unique_id=271911415]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_knk56")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CoinLabel" type="Label" parent="TopBar/Panel/MarginContainer/HBoxContainer/CoinContainer" unique_id=1656339597]
+layout_mode = 2
+text = "142"
+label_settings = SubResource("LabelSettings_resource_value")
+
+[node name="BottomLeftPanel" type="Panel" parent="." unique_id=2116167701]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -370.0
+offset_right = 220.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_bottomleft")
+
+[node name="MarginContainer" type="MarginContainer" parent="BottomLeftPanel" unique_id=725862218]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 20
+theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ColorRect/MarginContainer" unique_id=259586]
+[node name="VBoxContainer" type="VBoxContainer" parent="BottomLeftPanel/MarginContainer" unique_id=1344675085]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PopulationContainer" type="HBoxContainer" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer" unique_id=1300091786]
+[node name="NameContainer" type="VBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer" unique_id=1571466376]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLabel" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/NameContainer" unique_id=1822223935]
+layout_mode = 2
+text = "Bjorn"
+label_settings = SubResource("LabelSettings_name")
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/NameContainer" unique_id=2056694429]
+layout_mode = 2
+text = "The Programmer"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="BottomLeftPanel/MarginContainer/VBoxContainer" unique_id=869880600]
+layout_mode = 2
+theme_override_constants/separation = 4
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
+
+[node name="StatsPanel" type="Panel" parent="BottomLeftPanel/MarginContainer/VBoxContainer" unique_id=873554187]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_statsinset")
+
+[node name="StatsMargin" type="MarginContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel" unique_id=1039577480]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="StatsVBox" type="VBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin" unique_id=1316110200]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StrRow" type="VBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox" unique_id=977054304]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="StrHeader" type="HBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/StrRow" unique_id=1359963785]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer/PopulationContainer" unique_id=1703570017]
+[node name="StrTitle" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/StrRow/StrHeader" unique_id=1931202721]
 layout_mode = 2
-texture = ExtResource("1_ictxw")
+size_flags_horizontal = 3
+text = "Strength"
+label_settings = SubResource("LabelSettings_stat_label")
 
-[node name="PopulationLabel" type="Label" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer/PopulationContainer" unique_id=175536226]
+[node name="StrValue" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/StrRow/StrHeader" unique_id=761430991]
 layout_mode = 2
-text = "142"
+text = "20/20"
+label_settings = SubResource("LabelSettings_stat_value")
+horizontal_alignment = 2
 
-[node name="FoodContainer" type="HBoxContainer" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer" unique_id=927912703]
+[node name="StrBar" type="ProgressBar" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/StrRow" unique_id=604225860]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_str_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_str_bar_fill")
+max_value = 20.0
+value = 20.0
+show_percentage = false
+
+[node name="HonorRow" type="VBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox" unique_id=90093562]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="HonorHeader" type="HBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/HonorRow" unique_id=614569111]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer/FoodContainer" unique_id=1038229816]
+[node name="HonorTitle" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/HonorRow/HonorHeader" unique_id=395267695]
 layout_mode = 2
-texture = ExtResource("3_1736x")
+size_flags_horizontal = 3
+text = "Honor"
+label_settings = SubResource("LabelSettings_stat_label")
 
-[node name="FoodLabel" type="Label" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer/FoodContainer" unique_id=1085179522]
+[node name="HonorValue" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/HonorRow/HonorHeader" unique_id=335019246]
 layout_mode = 2
-text = "142"
+text = "20/20"
+label_settings = SubResource("LabelSettings_stat_value")
+horizontal_alignment = 2
 
-[node name="CoinContainer" type="HBoxContainer" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer" unique_id=593320268]
+[node name="HonorBar" type="ProgressBar" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/HonorRow" unique_id=1960558625]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_honor_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_honor_bar_fill")
+max_value = 20.0
+value = 20.0
+show_percentage = false
+
+[node name="FeatsRow" type="VBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox" unique_id=2117404626]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="FeatsHeader" type="HBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/FeatsRow" unique_id=1973135740]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer/CoinContainer" unique_id=1456873226]
+[node name="FeatsTitle" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/FeatsRow/FeatsHeader" unique_id=1536708585]
 layout_mode = 2
-texture = ExtResource("4_knk56")
+size_flags_horizontal = 3
+text = "Feats"
+label_settings = SubResource("LabelSettings_stat_label")
 
-[node name="CoinLabel" type="Label" parent="VBoxContainer/ColorRect/MarginContainer/HBoxContainer/CoinContainer" unique_id=1937801904]
+[node name="FeatsValue" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/FeatsRow/FeatsHeader" unique_id=2097204109]
 layout_mode = 2
-text = "142"
+text = "20/20"
+label_settings = SubResource("LabelSettings_stat_value")
+horizontal_alignment = 2
+
+[node name="FeatsBar" type="ProgressBar" parent="BottomLeftPanel/MarginContainer/VBoxContainer/StatsPanel/StatsMargin/StatsVBox/FeatsRow" unique_id=2099101999]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_feats_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_feats_bar_fill")
+max_value = 20.0
+value = 20.0
+show_percentage = false
+
+[node name="InventorySeparator" type="HSeparator" parent="BottomLeftPanel/MarginContainer/VBoxContainer" unique_id=1841985810]
+layout_mode = 2
+theme_override_constants/separation = 4
+theme_override_styles/separator = SubResource("StyleBoxFlat_separator")
+
+[node name="InventoryLabel" type="Label" parent="BottomLeftPanel/MarginContainer/VBoxContainer" unique_id=2031641983]
+layout_mode = 2
+text = "Inventory"
+label_settings = SubResource("LabelSettings_stat_label")
+horizontal_alignment = 1
+
+[node name="InventorySlots" type="HBoxContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer" unique_id=583958994]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Slot1" type="PanelContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/InventorySlots" unique_id=1754579895]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_statsinset")
+
+[node name="Icon" type="TextureRect" parent="BottomLeftPanel/MarginContainer/VBoxContainer/InventorySlots/Slot1" unique_id=1049760492]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Slot2" type="PanelContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/InventorySlots" unique_id=551786545]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_statsinset")
+
+[node name="Icon" type="TextureRect" parent="BottomLeftPanel/MarginContainer/VBoxContainer/InventorySlots/Slot2" unique_id=128446139]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Slot3" type="PanelContainer" parent="BottomLeftPanel/MarginContainer/VBoxContainer/InventorySlots" unique_id=1221910114]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_statsinset")
+
+[node name="Icon" type="TextureRect" parent="BottomLeftPanel/MarginContainer/VBoxContainer/InventorySlots/Slot3" unique_id=951221077]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5

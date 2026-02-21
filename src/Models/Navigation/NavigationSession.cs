@@ -15,6 +15,8 @@ public sealed class NavigationSession
 
     public NavigationMapNode CurrentNode => _map.NodesById[CurrentNodeId];
 
+    public int ConsecutiveNodesOfSameType { get; private set; }
+
     public NavigationSession(NavigationMap map, int? startNodeId = null)
     {
         ArgumentNullException.ThrowIfNull(map);
@@ -31,6 +33,7 @@ public sealed class NavigationSession
 
         CurrentNodeId = initialNodeId;
         _visitedNodeIds.Add(initialNodeId);
+        ConsecutiveNodesOfSameType = 1;
         _parentIdsByNodeId = BuildParentIdsByNodeId(_map);
     }
 
@@ -80,8 +83,17 @@ public sealed class NavigationSession
             return false;
         }
 
+        string currentKind = CurrentNode.Kind;
+        string destinationKind = _map.NodesById[nodeId].Kind;
+
         CurrentNodeId = nodeId;
         _visitedNodeIds.Add(nodeId);
+        ConsecutiveNodesOfSameType = string.Equals(
+            currentKind,
+            destinationKind,
+            StringComparison.Ordinal)
+            ? ConsecutiveNodesOfSameType + 1
+            : 1;
         return true;
     }
 

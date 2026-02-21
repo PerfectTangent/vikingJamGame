@@ -11,6 +11,9 @@ namespace VikingJamGame.GameLogic.Nodes;
 [GlobalClass][Meta(typeof(IAutoNode))]
 public partial class GodotMapGenerator : Node
 {
+    [Signal]
+    public delegate void MapGeneratedEventHandler(Vector2 startGlobalPosition, Vector2 endGlobalPosition);
+
 
     [ExportCategory("Dependencies")]
     [Export] private Button? GenerateButton { get; set; }
@@ -58,12 +61,16 @@ public partial class GodotMapGenerator : Node
         Node2D root = RequireNodesRoot();
         Node2D startNode = RequireStartingVillage();
 
+
+        
         _nodePositionsById.Clear();
         _visualNodesById.Clear();
         Vector2 startPosition = root.ToLocal(startNode.GlobalPosition);
+        
+        
         _nodePositionsById[_map.StartNodeId] = startPosition;
         _visualNodesById[_map.StartNodeId] = startNode;
-
+        
         foreach (Node child in root.GetChildren())
         {
             if (ReferenceEquals(child, startNode))
@@ -80,6 +87,14 @@ public partial class GodotMapGenerator : Node
         {
             if (mapNode.Id == _map.StartNodeId)
             {
+                if (startNode is GodotMapNode godotMapNode)
+                {
+                    _definitionsByKind.TryGetValue(mapNode.Kind, out MapNodeDefinition? startDefinition);
+                    startDefinition ??= new MapNodeDefinition { Name = mapNode.Kind };
+                    Texture2D? startTexture = LoadTextureForDefinition(startDefinition);
+                    godotMapNode.Initialize(mapNode, startDefinition, startTexture!);
+                }
+                
                 continue;
             }
 
@@ -361,16 +376,17 @@ public partial class GodotMapGenerator : Node
         node.Name = $"MapNode_{mapNode.Id}_{mapNode.Kind}";
 
         Texture2D? texture = null;
-        if (_definitionsByKind.TryGetValue(mapNode.Kind, out MapNodeDefinition? definition))
+        if (!_definitionsByKind.TryGetValue(mapNode.Kind, out MapNodeDefinition? definition))
         {
-            texture = LoadTextureForDefinition(definition);
+            GD.PushWarning($"No map definition found for node kind '{mapNode.Kind}'.");
+            definition = new MapNodeDefinition { Name = mapNode.Kind, Description = "" };
         }
         else
         {
-            GD.PushWarning($"No map definition found for node kind '{mapNode.Kind}'.");
+            texture = LoadTextureForDefinition(definition);
         }
 
-        node.Initialize(mapNode, texture);
+        node.Initialize(mapNode, definition, texture!);
         return node;
     }
 
@@ -405,6 +421,15 @@ public partial class GodotMapGenerator : Node
 
         _map = _generator.Generate(_definitionsByKind, START_KIND, END_KIND, MaxNodesCount, parameters: parameters);
         CreateMap();
+
+        Vector2 startGlobal = RequireStartingVillage().GlobalPosition;
+        Vector2 endGlobal = startGlobal;
+        if (_map.EndNodeId is int endNodeId && _visualNodesById.TryGetValue(endNodeId, out Node2D endVisualNode))
+        {
+            endGlobal = endVisualNode.GlobalPosition;
+        }
+
+        EmitSignal(SignalName.MapGenerated, startGlobal, endGlobal);
     }
 
     public bool TryGetRenderContext(
@@ -427,6 +452,11 @@ public partial class GodotMapGenerator : Node
         return true;
     }
 
+    public bool TryGetVisualNode(int nodeId, out Node2D visualNode)
+    {
+        return _visualNodesById.TryGetValue(nodeId, out visualNode!);
+    }
+
     public void SetNodeVisibility(IReadOnlySet<int> visibleNodeIds, IReadOnlySet<int>? knownNodeIds = null)
     {
         IReadOnlySet<int> effectiveKnownNodeIds = knownNodeIds ?? visibleNodeIds;
@@ -438,6 +468,17 @@ public partial class GodotMapGenerator : Node
             if (visualNode is GodotMapNode mapNode)
             {
                 mapNode.SetIdentityKnown(effectiveKnownNodeIds.Contains(nodeId));
+            }
+        }
+    }
+
+    public void SetCurrentNode(int nodeId)
+    {
+        foreach (var (id, visualNode) in _visualNodesById)
+        {
+            if (visualNode is GodotMapNode mapNode)
+            {
+                mapNode.SetIsCurrentNode(id == nodeId);
             }
         }
     }

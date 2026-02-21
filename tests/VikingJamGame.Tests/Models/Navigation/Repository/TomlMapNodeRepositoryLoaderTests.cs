@@ -16,9 +16,15 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 "start.toml",
                 """
                 Kind = "start"
+                Name = "Start"
+                Description = "Starting point"
                 Art = "start.png"
                 ForcedFirstEvent = "intro_event"
                 EventsPool = ["event.a", "event.b"]
+
+                [EventsOnConsecutiveVisits]
+                "2" = "event.consecutive.2"
+                "4" = "event.consecutive.4"
 
                 [PossibleNeighbours]
                 forest = 0.75
@@ -30,6 +36,8 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 "forest.toml",
                 """
                 Kind = "forest"
+                Name = "Forest"
+                Description = "A dense forest"
                 Art = "forest.png"
                 EventsPool = ["forest.event"]
 
@@ -42,6 +50,8 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 "river.toml",
                 """
                 Kind = "river"
+                Name = "River"
+                Description = "A flowing river"
                 Art = "river.png"
 
                 [PossibleNeighbours]
@@ -55,6 +65,8 @@ public sealed class TomlMapNodeRepositoryLoaderTests
             Assert.Equal("start.png", start.Art);
             Assert.Equal("intro_event", start.ForcedFirstEvent);
             Assert.Equal(["event.a", "event.b"], start.EventsPool);
+            Assert.Equal("event.consecutive.2", start.EventsOnConsecutiveVisits[2]);
+            Assert.Equal("event.consecutive.4", start.EventsOnConsecutiveVisits[4]);
             Assert.Equal(0.75f, start.PossibleNeighbours["forest"]);
             Assert.Equal(0.25f, start.PossibleNeighbours["river"]);
         }
@@ -99,6 +111,8 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 "start.toml",
                 """
                 Kind = "start"
+                Name = "Start"
+                Description = "A start"
 
                 [PossibleNeighbours]
                 forest = -0.1
@@ -109,6 +123,8 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 "forest.toml",
                 """
                 Kind = "forest"
+                Name = "Forest"
+                Description = "A forest"
                 """);
 
             InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() =>
@@ -133,6 +149,8 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 "start.toml",
                 """
                 Kind = "start"
+                Name = "Start"
+                Description = "A start"
 
                 [PossibleNeighbours]
                 missing = 1
@@ -142,6 +160,35 @@ public sealed class TomlMapNodeRepositoryLoaderTests
                 TomlMapNodeRepositoryLoader.LoadFromDirectory(tempDirectory));
 
             Assert.Contains("unknown neighbour kind 'missing'", exception.Message);
+        }
+        finally
+        {
+            DeleteDirectory(tempDirectory);
+        }
+    }
+
+    [Fact]
+    public void LoadFromDirectory_ThrowsWhenConsecutiveVisitThresholdIsNotInteger()
+    {
+        var tempDirectory = CreateTempDirectory();
+        try
+        {
+            WriteToml(
+                tempDirectory,
+                "start.toml",
+                """
+                Kind = "start"
+                Name = "Start"
+                Description = "A start"
+
+                [EventsOnConsecutiveVisits]
+                abc = "event.id"
+                """);
+
+            InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() =>
+                TomlMapNodeRepositoryLoader.LoadFromDirectory(tempDirectory));
+
+            Assert.Contains("non-integer threshold", exception.Message);
         }
         finally
         {

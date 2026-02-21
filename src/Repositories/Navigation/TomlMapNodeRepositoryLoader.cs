@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Tomlyn;
@@ -69,6 +70,10 @@ public static class TomlMapNodeRepositoryLoader
             PossibleNeighbours = GetPossibleNeighbours(root, nameof(MapNodeDefinition.PossibleNeighbours), filePath),
             ForcedFirstEvent = GetOptionalString(root, nameof(MapNodeDefinition.ForcedFirstEvent), filePath),
             EventsPool = GetOptionalStringArray(root, nameof(MapNodeDefinition.EventsPool), filePath),
+            EventsOnConsecutiveVisits = GetOptionalConsecutiveVisitEvents(
+                root,
+                nameof(MapNodeDefinition.EventsOnConsecutiveVisits),
+                filePath),
             Art = GetOptionalString(root, nameof(MapNodeDefinition.Art), filePath) ?? ""
         };
     }
@@ -179,6 +184,49 @@ public static class TomlMapNodeRepositoryLoader
         }
 
         return neighbours;
+    }
+
+    private static Dictionary<int, string> GetOptionalConsecutiveVisitEvents(
+        TomlTable table,
+        string key,
+        string filePath)
+    {
+        if (!table.TryGetValue(key, out var rawValue))
+        {
+            return new Dictionary<int, string>();
+        }
+
+        if (rawValue is not TomlTable eventsTable)
+        {
+            throw new InvalidOperationException(
+                $"TOML file '{filePath}' key '{key}' must be a table.");
+        }
+
+        var eventsByConsecutiveVisitCount = new Dictionary<int, string>();
+        foreach (var entry in eventsTable)
+        {
+            if (!int.TryParse(entry.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out int consecutiveVisitCount))
+            {
+                throw new InvalidOperationException(
+                    $"TOML file '{filePath}' key '{key}' contains non-integer threshold '{entry.Key}'.");
+            }
+
+            if (consecutiveVisitCount < 1)
+            {
+                throw new InvalidOperationException(
+                    $"TOML file '{filePath}' key '{key}' threshold '{entry.Key}' must be >= 1.");
+            }
+
+            if (entry.Value is not string eventId || string.IsNullOrWhiteSpace(eventId))
+            {
+                throw new InvalidOperationException(
+                    $"TOML file '{filePath}' key '{key}' threshold '{entry.Key}' must map to a non-empty string.");
+            }
+
+            eventsByConsecutiveVisitCount[consecutiveVisitCount] = eventId;
+        }
+
+        return eventsByConsecutiveVisitCount;
     }
 
     private static void ValidateNeighbourKinds(IReadOnlyCollection<MapNodeDefinition> nodes)

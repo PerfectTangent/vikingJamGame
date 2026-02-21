@@ -64,7 +64,39 @@ internal static class GameStateStats
         _ => throw new ArgumentOutOfRangeException(nameof(id))
     };
 
-    private static void Spend(PlayerInfo playerInfo, GameResources gameResources, StatId id, int amount)
+    public static void Add(PlayerInfo playerInfo, GameResources gameResources, StatId id, int amount)
+    {
+        if (amount < 0)
+        {
+            throw new InvalidOperationException("Add amount must be >= 0. Use Spend for losses.");
+        }
+
+        switch (id)
+        {
+            case StatId.Population:
+                gameResources.AddPopulation(amount);
+                break;
+            case StatId.Food:
+                gameResources.AddFood(amount);
+                break;
+            case StatId.Gold:
+                gameResources.AddGold(amount);
+                break;
+            case StatId.Strength:
+                playerInfo.AddStrength(amount);
+                break;
+            case StatId.Honor:
+                playerInfo.AddHonor(amount);
+                break;
+            case StatId.Feats:
+                playerInfo.AddFeats(amount);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(id));
+        }
+    }
+
+    internal static void Spend(PlayerInfo playerInfo, GameResources gameResources, StatId id, int amount)
     {
         if (amount < 0)
         {

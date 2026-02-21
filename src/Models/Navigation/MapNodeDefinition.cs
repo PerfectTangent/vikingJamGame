@@ -5,8 +5,8 @@ namespace VikingJamGame.Models.Navigation;
 public record MapNodeDefinition
 {
     public string Kind { get; init; } = "";
-    public required string Name { get; init; }
-    public required string Description { get; init; }
+    public string Name { get; init; } = "";
+    public string Description { get; init; } = "";
     // kind of node and weight, from 0 to 1
     public Dictionary<string, float> PossibleNeighbours { get; init; } = new();
 
@@ -15,4 +15,6 @@ public record MapNodeDefinition
 
     // name of the image and extension. Path is known
     public string Art { get; set; } = "";
+    
+    public Dictionary<int, string> EventsOnConsecutiveVisits { get; set; } = new();
 }

@@ -3,6 +3,7 @@ using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
 using Godot;
 using VikingJamGame.GameLogic.Nodes;
+using VikingJamGame.Models.GameEvents.Runtime;
 using VikingJamGame.Models.Navigation;
 
 namespace VikingJamGame.GameLogic;
@@ -16,12 +17,44 @@ public partial class GameLoopMachine : LogicBlock<GameLoopMachine.State>
     public static class Input
     {
         public readonly record struct DestinationSelected(int NodeId);
-        public readonly struct EventResolved;
+        public readonly record struct EventResolved(EventResults Results);
         public readonly struct MovementCostDone;
+        public readonly struct InitializationDone;
     }
 
-    public abstract record State : StateLogic<State>
+    public abstract partial record State : StateLogic<State>
     {
+        protected string? ResolveConsecutiveVisitEventId()
+        {
+            GodotNavigationSession nav = Get<GodotNavigationSession>();
+            GodotMapNodeRepository nodeRepository = Get<GodotMapNodeRepository>();
+
+            string currentNodeKind = nav.CurrentNode.Kind;
+            if (!nodeRepository.TryGetByKind(currentNodeKind, out MapNodeDefinition nodeDefinition))
+            {
+                GD.PushWarning(
+                    $"No map-node definition for kind '{currentNodeKind}' while resolving consecutive-visit events.");
+                return null;
+            }
+
+            return ResolveConsecutiveVisitEventId(
+                nodeDefinition.EventsOnConsecutiveVisits,
+                nav.ConsecutiveNodesOfSameType);
+        }
+
+        private static string? ResolveConsecutiveVisitEventId(
+            IReadOnlyDictionary<int, string> eventsByConsecutiveVisitCount,
+            int consecutiveVisitCount)
+        {
+            if (eventsByConsecutiveVisitCount.TryGetValue(consecutiveVisitCount, out string? eventId)
+                && !string.IsNullOrWhiteSpace(eventId))
+            {
+                return eventId;
+            }
+
+            return null;
+        }
+
         protected void UpdateVisibility()
         {
             GodotMapGenerator generator = Get<GodotMapGenerator>();
@@ -35,54 +68,19 @@ public partial class GameLoopMachine : LogicBlock<GameLoopMachine.State>
             HashSet<int> knownIdentityNodeIds = map.GetNodesWithinDistance(nav.CurrentNodeId, IDENTITY_REVEAL_RANGE);
             knownIdentityNodeIds.UnionWith(nav.VisitedNodeIds);
 
-            generator.SetNodeVisibility(visibleNodeIds, knownIdentityNodeIds);
-            linkRenderer.RenderConnectionsBetweenVisibleNodes(visibleNodeIds);
-        }
-
-        public record EventPhase : State
-        {
-            public EventPhase() => this.OnEnter(() =>
+            if (map.EndNodeId is { } endNodeId)
             {
-                GD.Print("EventPhase");
-                UpdateVisibility();
-                // TODO: trigger the event at current node
-            });
-
-            // we trigger the event at the current Node, player has to resolve it
-            // and the resources amount is adjusted accordingly
-        }
-
-        public record PlanningPhase : State, IGet<Input.DestinationSelected>
-        {
-            public PlanningPhase() => this.OnEnter(() => GD.Print("PlanningPhase"));
-
-            public Transition On(in Input.DestinationSelected input)
-            {
-                GodotNavigationSession nav = Get<GodotNavigationSession>();
-
-                if (!nav.CanMoveTo(input.NodeId))
-                {
-                    GD.Print($"Cannot move to node {input.NodeId}");
-                    return ToSelf();
-                }
-
-                nav.MoveTo(input.NodeId);
-                return To<EventPhase>();
+                visibleNodeIds.Add(endNodeId);
+                knownIdentityNodeIds.Add(endNodeId);
             }
+
+            generator.SetNodeVisibility(visibleNodeIds, knownIdentityNodeIds);
+            generator.SetCurrentNode(nav.CurrentNodeId);
+            linkRenderer.RenderConnectionsForCurrentNode(nav.CurrentNodeId, visibleNodeIds);
         }
 
-        public record MovementCostPhase : State, IGet<Input.MovementCostDone>
-        {
-            public MovementCostPhase() => this.OnEnter(() =>
-            {
-                GD.Print("MovementCostPhase");
-                // TODO: consume movement cost (skip on first turn)
-                Input(new Input.MovementCostDone());
-            });
 
-            public Transition On(in Input.MovementCostDone input) => To<PlanningPhase>();
-        }
     }
 
-    public override Transition GetInitialState() => To<State.EventPhase>();
+    public override Transition GetInitialState() => To<State.Initialization>();
 }

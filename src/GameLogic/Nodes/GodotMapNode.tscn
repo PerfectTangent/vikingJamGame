@@ -3,21 +3,26 @@
 [ext_resource type="Script" uid="uid://dpjm31fn5qxp5" path="res://src/GameLogic/Nodes/GodotMapNode.cs" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://ctg8ypby512jx" path="res://resources/map-generator-test/unknown.png" id="2_wfqli"]
 
-[node name="GodotMapNode" type="Node2D" unique_id=780701421 node_paths=PackedStringArray("Sprite", "Label")]
+[node name="GodotMapNode" type="Node2D" unique_id=780701421 node_paths=PackedStringArray("Sprite", "Label", "InternalControl", "ToolTipPosition")]
 script = ExtResource("1_script")
 Sprite = NodePath("Sprite2D")
 Label = NodePath("Control/Label")
 UnknownTexture = ExtResource("2_wfqli")
+InternalControl = NodePath("Control")
+ToolTipPosition = NodePath("Marker2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1325088877]
 texture = ExtResource("2_wfqli")
 
+[node name="Marker2D" type="Marker2D" parent="." unique_id=422249202]
+position = Vector2(0, 71)
+
 [node name="Control" type="Control" parent="." unique_id=1416159286]
 layout_mode = 3
 anchors_preset = 0
-offset_left = -40.0
+offset_left = -31.0
 offset_top = -32.0
-offset_right = 41.0
+offset_right = 31.0
 offset_bottom = 31.0
 
 [node name="Label" type="Label" parent="Control" unique_id=381531426]

@@ -1,4 +1,5 @@
-using VikingJamGame.Models.GameEvents.Commands;
+using VikingJamGame.Models.GameEvents.Conditions;
+using VikingJamGame.Models.GameEvents.Effects;
 using VikingJamGame.Models.GameEvents.Runtime;
 using VikingJamGame.Repositories.GameEvents;
 
@@ -71,9 +72,9 @@ public sealed class InMemoryGameEventRepositoryTests
             ResolutionText = "Goes",
             Order = 1,
             DisplayCosts = false,
-            Requirements = [],
+            VisibilityConditions = [],
             Costs = [],
-            Command = NoopCommand.Instance,
+            Effects = [],
             NextEventId = nextEventId
         };
 }

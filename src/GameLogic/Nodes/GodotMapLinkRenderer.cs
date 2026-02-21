@@ -87,7 +87,7 @@ public partial class GodotMapLinkRenderer : Node
         nodesRoot.AddChild(layer);
     }
 
-    public void RenderConnectionsForCurrentNode(int currentNodeId)
+    public void RenderConnectionsForCurrentNode(int currentNodeId, IReadOnlySet<int>? visibleNodeIds = null)
     {
         if (!TryGetRenderContext(out NavigationMap map, out Node2D nodesRoot, out IReadOnlyDictionary<int, Vector2> nodePositionsById))
         {
@@ -144,6 +144,12 @@ public partial class GodotMapLinkRenderer : Node
         {
             // If node has explicit bidirectional edge, prefer forward style once.
             if (forwardTargets.Contains(parentId))
+            {
+                continue;
+            }
+
+            // Only draw backward links to nodes that are actually visible.
+            if (visibleNodeIds is not null && !visibleNodeIds.Contains(parentId))
             {
                 continue;
             }

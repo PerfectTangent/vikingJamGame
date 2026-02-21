@@ -105,9 +105,9 @@ public partial class PrologueScript : Node2D
             _initialData.PlayerInfo.Name,
             _initialData.PlayerInfo.BirthChoice,
             _initialData.PlayerInfo.Title,
-            _initialData.PlayerInfo.Strength,
-            _initialData.PlayerInfo.Honor,
-            _initialData.PlayerInfo.Feats
+            _initialData.PlayerInfo.Strength, _initialData.PlayerInfo.MaxStrength,
+            _initialData.PlayerInfo.Honor, _initialData.PlayerInfo.MaxHonor,
+            _initialData.PlayerInfo.Feats, _initialData.PlayerInfo.MaxFeats
         );
         
         GameResources.SetInitialResources(

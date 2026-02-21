@@ -74,6 +74,7 @@ public sealed class NavigationMapGenerator
 
         private readonly List<MutableNode> _mutableNodes = new(capacity: maxNodes);
         private int _startNodeId;
+        private int? _endNodeId;
 
         public NavigationMap Generate(string startKind, string endKind)
         {
@@ -351,6 +352,7 @@ public sealed class NavigationMapGenerator
                     .First();
 
                 finalDestination.Kind = endKind;
+                _endNodeId = finalDestination.Id;
 
                 List<MutableNode> deepestOtherLooseEnds = looseEnds
                     .Where(node => node.Depth == deepestLooseDepth && node.Id != finalDestination.Id)
@@ -518,6 +520,7 @@ public sealed class NavigationMapGenerator
             return new NavigationMap
             {
                 StartNodeId = _startNodeId,
+                EndNodeId = _endNodeId,
                 NodesById = frozenNodes
             };
         }

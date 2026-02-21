@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dvv4f51d8aui7"]
+
+[ext_resource type="Script" uid="uid://rv10klsstci7" path="res://src/GameLogic/ToolTipHandler.cs" id="1_nr2ng"]
+
+[node name="ToolTipHandler" type="CanvasLayer" unique_id=1403373007 node_paths=PackedStringArray("Container", "ToolTipLabel")]
+script = ExtResource("1_nr2ng")
+Container = NodePath("PanelContainer")
+ToolTipLabel = NodePath("PanelContainer/MarginContainer/Label")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=726006666]
+custom_minimum_size = Vector2(120, 24)
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=665510809]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer" unique_id=589104596]
+layout_mode = 2
+text = "Una descripción muy cachilupi y la wea"

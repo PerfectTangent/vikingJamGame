@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using VikingJamGame.Models.GameEvents.Commands;
+using VikingJamGame.Models.GameEvents.Conditions;
 using VikingJamGame.Models.GameEvents.Definitions;
+using VikingJamGame.Models.GameEvents.Effects;
 using VikingJamGame.Models.GameEvents.Runtime;
 
 namespace VikingJamGame.Models.GameEvents.Compilation;
@@ -52,7 +55,7 @@ public static class GameEventCompiler
         ICommandRegistry commands,
         GameEventTemplateContext? templateContext)
     {
-        var requirements = GameEventDefinitionParser.ParsePairs(
+        var visibilityConditions = GameEventDefinitionParser.ParseConditionPairs(
             eventId,
             optionDefinition.Order,
             "Condition",
@@ -64,12 +67,24 @@ public static class GameEventCompiler
             "Cost",
             optionDefinition.Cost);
 
-        requirements = GameEventOptionRequirements.Merge(requirements, costs);
-        var command = GameEventDefinitionParser.ParseCommand(
+        List<IGameEventEffect> effects = GameEventDefinitionParser.ParseEffectPairs(
+                eventId,
+                optionDefinition.Order,
+                "Effect",
+                optionDefinition.Effect)
+            .Cast<IGameEventEffect>()
+            .ToList();
+
+        var customCommand = GameEventDefinitionParser.ParseCommand(
             eventId,
             optionDefinition.Order,
             optionDefinition.CustomCommand,
             commands);
+
+        if (customCommand is not null)
+        {
+            effects.Add(customCommand);
+        }
 
         return new GameEventOption
         {
@@ -81,9 +96,9 @@ public static class GameEventCompiler
                 templateContext),
             Order = optionDefinition.Order,
             DisplayCosts = optionDefinition.DisplayCosts,
-            Requirements = requirements,
+            VisibilityConditions = visibilityConditions,
             Costs = costs,
-            Command = command,
+            Effects = effects,
             NextEventId = NormalizeNextEventId(optionDefinition.NextEventId)
         };
     }

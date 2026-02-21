@@ -13,6 +13,9 @@ public sealed record GameEventOptionDefinition
     public string? Cost { get; init; }
     public bool DisplayCosts { get; init; } = false;
 
+    // format: "food:+3;honor:-1". Signed amounts: positive = gain, negative = loss.
+    public string? Effect { get; init; }
+
     // format: "ApplyDebuff:Famine"
     public string? CustomCommand { get; init; }
 

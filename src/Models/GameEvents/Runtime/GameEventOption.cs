@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
-using VikingJamGame.Models.GameEvents.Commands;
+using VikingJamGame.Models.GameEvents.Conditions;
+using VikingJamGame.Models.GameEvents.Effects;
 using VikingJamGame.Models.GameEvents.Stats;
 
 namespace VikingJamGame.Models.GameEvents.Runtime;
@@ -12,24 +12,14 @@ public sealed class GameEventOption
     public required int Order { get; init; }
     public required bool DisplayCosts { get; init; }
 
-    public required IReadOnlyList<StatAmount> Requirements { get; init; }
+    /// <summary>All must pass for this option to be visible.</summary>
+    public required IReadOnlyList<IGameEventCondition> VisibilityConditions { get; init; }
+
+    /// <summary>Resource costs: must be payable for the option to be selectable; deducted on resolve.</summary>
     public required IReadOnlyList<StatAmount> Costs { get; init; }
 
-    public required IEventCommand Command { get; init; }
+    /// <summary>Applied after costs are paid when this option is resolved.</summary>
+    public required IReadOnlyList<IGameEventEffect> Effects { get; init; }
+
     public string? NextEventId { get; init; }
-
-    public bool IsAvailable(PlayerInfo playerInfo, GameResources gameResources) =>
-        GameStateStats.MeetsAll(playerInfo, gameResources, Requirements) &&
-        GameStateStats.CanPayAll(playerInfo, gameResources, Costs);
-
-    public void Execute(PlayerInfo playerInfo, GameResources gameResources)
-    {
-        if (!GameStateStats.CanPayAll(playerInfo, gameResources, Costs))
-        {
-            throw new InvalidOperationException("Option executed without being affordable.");
-        }
-
-        GameStateStats.PayAll(playerInfo, gameResources, Costs);
-        Command.Execute(playerInfo, gameResources);
-    }
 }

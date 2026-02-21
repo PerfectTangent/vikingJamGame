@@ -6,17 +6,21 @@
 [ext_resource type="Texture2D" uid="uid://yiry6jvel2q4" path="res://resources/kenney-cartography/Textures/parchmentBasic.png" id="2_2ekd4"]
 [ext_resource type="Script" uid="uid://cxxgaofkj80fn" path="res://src/GameLogic/Nodes/GodotMapNodeRepository.cs" id="2_htsas"]
 [ext_resource type="Texture2D" uid="uid://bhi4nefpf3gs6" path="res://resources/map-generator-test/starting_village.png" id="3_7w6d0"]
-[ext_resource type="Script" uid="uid://8pkh42ukx712" path="res://src/GameLogic/Nodes/Providers/MapProvider.cs" id="4_j7frm"]
 [ext_resource type="Script" uid="uid://7kb2xf0kvike" path="res://src/GameLogic/Nodes/GodotMapGenerator.cs" id="5_47s65"]
 [ext_resource type="PackedScene" uid="uid://cxo8hyfdk7k1e" path="res://src/GameLogic/Nodes/GodotMapNode.tscn" id="6_47s65"]
 [ext_resource type="Script" uid="uid://b1uo7a566ut1h" path="res://src/GameLogic/Nodes/GodotNavigationSession.cs" id="6_csjh5"]
 [ext_resource type="Script" uid="uid://ymbacbrp6t8d" path="res://src/GameLogic/Nodes/GodotMapLinkRenderer.cs" id="7_ne715"]
+[ext_resource type="PackedScene" uid="uid://dvv4f51d8aui7" path="res://src/Ui/ToolTipHandler.tscn" id="11_47s65"]
 
-[node name="PlayingScene" type="Node2D" unique_id=1258357497 node_paths=PackedStringArray("Generator", "LinkRenderer", "NavigationSession")]
+[node name="PlayingScene" type="Node2D" unique_id=1258357497 node_paths=PackedStringArray("Generator", "LinkRenderer", "NavigationSession", "NodeRepository", "ToolTipHandler", "Camera", "CameraController")]
 script = ExtResource("1_wp484")
-Generator = NodePath("MapProvider/GodotMapGenerator")
-LinkRenderer = NodePath("MapProvider/GodotMapLinkRenderer")
-NavigationSession = NodePath("MapProvider/GodotNavigationSession")
+Generator = NodePath("GodotMapGenerator")
+LinkRenderer = NodePath("GodotMapLinkRenderer")
+NavigationSession = NodePath("GodotNavigationSession")
+NodeRepository = NodePath("GodotMapNodeRepo")
+ToolTipHandler = NodePath("ToolTipHandler")
+Camera = NodePath("Camera2D")
+CameraController = NodePath("CameraController")
 metadata/_custom_type_script = "uid://ceo8v2obykqu3"
 
 [node name="CameraController" type="Node" parent="." unique_id=298045096 node_paths=PackedStringArray("Camera2D", "StartingVillage")]
@@ -29,30 +33,24 @@ metadata/_custom_type_script = "uid://bfi7u3adqooxv"
 script = ExtResource("2_htsas")
 metadata/_custom_type_script = "uid://cxxgaofkj80fn"
 
-[node name="MapProvider" type="Node" parent="." unique_id=99679031 node_paths=PackedStringArray("_generator", "_repo")]
-script = ExtResource("4_j7frm")
-_generator = NodePath("GodotMapGenerator")
-_repo = NodePath("../GodotMapNodeRepo")
-metadata/_custom_type_script = "uid://8pkh42ukx712"
-
-[node name="GodotMapGenerator" type="Node" parent="MapProvider" unique_id=573114968 node_paths=PackedStringArray("GenerateButton", "StartingVillage", "NodesRoot")]
+[node name="GodotMapGenerator" type="Node" parent="." unique_id=573114968 node_paths=PackedStringArray("StartingVillage", "NodesRoot")]
 script = ExtResource("5_47s65")
-GenerateButton = NodePath("")
-StartingVillage = NodePath("../../NodesRoot/StartingVillage")
-NodesRoot = NodePath("../../NodesRoot")
+StartingVillage = NodePath("../NodesRoot/StartingVillage")
+NodesRoot = NodePath("../NodesRoot")
 MapNodeScene = ExtResource("6_47s65")
 RowSpacingY = 300.0
-JitterAmount = 120.0
+JitterAmount = 50.0
 MaxNodesCount = 50
 metadata/_custom_type_script = "uid://7kb2xf0kvike"
 
-[node name="GodotNavigationSession" type="Node" parent="MapProvider" unique_id=385201836]
+[node name="GodotNavigationSession" type="Node" parent="." unique_id=385201836]
 script = ExtResource("6_csjh5")
 metadata/_custom_type_script = "uid://b1uo7a566ut1h"
 
-[node name="GodotMapLinkRenderer" type="Node" parent="MapProvider" unique_id=1545152434]
+[node name="GodotMapLinkRenderer" type="Node" parent="." unique_id=139152173]
 script = ExtResource("7_ne715")
-DebugRendering = true
+ForwardConnectionDotColor = Color(0.016453063, 0.016213289, 0.2493749, 0.8509804)
+metadata/_custom_type_script = "uid://ymbacbrp6t8d"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=275781661]
 
@@ -76,8 +74,10 @@ position = Vector2(176, 226)
 texture = ExtResource("3_7w6d0")
 
 [node name="Label" parent="NodesRoot/StartingVillage/Control" parent_id_path=PackedInt32Array(780701421, 1416159286) index="0" unique_id=381531426]
-text = "My Village"
+text = "Start"
 
 [node name="MainGui" parent="." unique_id=390611769 instance=ExtResource("1_kh1ko")]
+
+[node name="ToolTipHandler" parent="." unique_id=1403373007 instance=ExtResource("11_47s65")]
 
 [editable path="NodesRoot/StartingVillage"]

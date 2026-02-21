@@ -23,6 +23,7 @@ public partial class GodotNavigationSession : Node
     public int CurrentNodeId => RequireSession().CurrentNodeId;
     public NavigationMapNode CurrentNode => RequireSession().CurrentNode;
     public IReadOnlySet<int> VisitedNodeIds => RequireSession().VisitedNodeIds;
+    public int ConsecutiveNodesOfSameType => RequireSession().ConsecutiveNodesOfSameType;
 
     public IReadOnlyList<int> GetForwardNodeIds() => RequireSession().GetForwardNodeIds();
     public IReadOnlyList<int> GetBackwardNodeIds() => RequireSession().GetBackwardNodeIds();
@@ -56,7 +57,7 @@ public partial class GodotNavigationSession : Node
 
     public bool TryInitialize(int? startNodeId = null)
     {
-        if (Generator?.CurrentMap is null)
+        if (Generator.CurrentMap is null)
         {
             return false;
         }

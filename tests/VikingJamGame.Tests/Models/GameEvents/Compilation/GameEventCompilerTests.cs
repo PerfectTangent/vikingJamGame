@@ -1,7 +1,10 @@
+using System.Linq;
 using VikingJamGame.Models;
 using VikingJamGame.Models.GameEvents.Commands;
 using VikingJamGame.Models.GameEvents.Compilation;
+using VikingJamGame.Models.GameEvents.Conditions;
 using VikingJamGame.Models.GameEvents.Definitions;
+using VikingJamGame.Models.GameEvents.Effects;
 using VikingJamGame.Models.GameEvents.Runtime;
 using VikingJamGame.Models.GameEvents.Stats;
 using VikingJamGame.TemplateUtils;
@@ -12,7 +15,7 @@ namespace VikingJamGame.Tests.Models.GameEvents.Compilation;
 public sealed class GameEventCompilerTests
 {
     [Fact]
-    public void Compile_SortsOptionsByOrder_AndMergesCostIntoRequirements()
+    public void Compile_SortsOptionsByOrder_AndSeparatesConditionsFromCosts()
     {
         var definition = new GameEventDefinition
         {
@@ -42,9 +45,15 @@ public sealed class GameEventCompilerTests
 
         Assert.Equal([1, 2], compiled.Options.Select(option => option.Order).ToArray());
         GameEventOption first = compiled.Options.First();
-        Assert.Contains(first.Requirements, amount => amount is { Stat: StatId.Food, Amount: 3 });
-        Assert.Contains(first.Requirements, amount => amount is { Stat: StatId.Gold, Amount: 2 });
-        Assert.Equal(2, first.Requirements.Count);
+
+        // Condition parsed as visibility condition only
+        Assert.Single(first.VisibilityConditions);
+        Assert.Contains(first.VisibilityConditions, c => c is StatThresholdCondition { Stat: StatId.Food, MinAmount: 1 });
+
+        // Costs are separate and not merged with conditions
+        Assert.Equal(2, first.Costs.Count);
+        Assert.Contains(first.Costs, amount => amount is { Stat: StatId.Food, Amount: 3 });
+        Assert.Contains(first.Costs, amount => amount is { Stat: StatId.Gold, Amount: 2 });
     }
 
     [Fact]
@@ -104,11 +113,12 @@ public sealed class GameEventCompilerTests
 
         Assert.Single(commandRegistry.CreatedCommands);
         Assert.Equal(("ApplyDebuff", "Fear"), commandRegistry.CreatedCommands[0]);
-        Assert.Same(markerCommand, compiled.Options.Single().Command);
+        CustomCommandEffect customEffect = Assert.IsType<CustomCommandEffect>(compiled.Options.Single().Effects.Single());
+        Assert.Same(markerCommand, customEffect.Command);
     }
 
     [Fact]
-    public void Compile_UsesNoopWhenCustomCommandIsMissing()
+    public void Compile_HasNoEffectsWhenCustomCommandIsMissing()
     {
         var commandRegistry = new RecordingCommandRegistry();
         var definition = new GameEventDefinition
@@ -130,7 +140,7 @@ public sealed class GameEventCompilerTests
         GameEvent compiled = GameEventCompiler.Compile(definition, commandRegistry);
 
         Assert.Empty(commandRegistry.CreatedCommands);
-        Assert.Same(NoopCommand.Instance, compiled.Options.Single().Command);
+        Assert.Empty(compiled.Options.Single().Effects);
     }
 
     [Fact]
@@ -156,7 +166,35 @@ public sealed class GameEventCompilerTests
         InvalidOperationException exception = Assert.
             Throws<InvalidOperationException>(() => GameEventCompiler.Compile(definition, new RecordingCommandRegistry()));
 
-        Assert.Contains("unknown stat 'mystery' in Condition", exception.Message);
+        Assert.Contains("unknown condition key 'mystery' in Condition", exception.Message);
+    }
+
+    [Fact]
+    public void Compile_ParsesSignedEffectPairs()
+    {
+        var definition = new GameEventDefinition
+        {
+            Id = "event.effects",
+            Name = "Effects",
+            Description = "desc",
+            OptionDefinitions =
+            [
+                new GameEventOptionDefinition
+                {
+                    DisplayText = "Plunder",
+                    ResolutionText = "Plundered",
+                    Order = 1,
+                    Effect = "food:+5;honor:-1"
+                }
+            ]
+        };
+
+        GameEvent compiled = GameEventCompiler.Compile(definition, new RecordingCommandRegistry());
+
+        GameEventOption option = compiled.Options.Single();
+        Assert.Equal(2, option.Effects.Count);
+        Assert.Contains(option.Effects, e => e is StatChangeEffect { Stat: StatId.Food, Amount: 5 });
+        Assert.Contains(option.Effects, e => e is StatChangeEffect { Stat: StatId.Honor, Amount: -1 });
     }
 
     [Fact]
