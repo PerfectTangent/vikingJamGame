@@ -1,7 +1,7 @@
 Id = "mead_flask"
 Name = "Flask of Mead"
 Description = "A sturdy leather flask filled with honeyed mead. Restores strength when consumed."
-Art = "mead_flask.png"
+Art = "simple_sword.png"
 ConsumableCharges = 2
-EffectsOnUse = ["strength:+2"]
+EffectsOnUse = ["strength:+1"]
 EffectsOnUneQuip = ["event:empty_flask"]

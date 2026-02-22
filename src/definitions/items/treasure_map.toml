@@ -1,0 +1,4 @@
+Id = "treasure_map"
+Name = "Treasure Map"
+Description = "The crudely sketched cartography prompts your imagination. Perhaps it would be worth a detour?"
+Art = "simple_sword.png"

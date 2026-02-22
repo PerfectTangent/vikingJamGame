@@ -1,0 +1,12 @@
+Kind = "wastes"
+Name = "Wastes"
+Description = "Barren lands, nearly lifeless, left to erode with the winds."
+Art = "wastes.png"
+EventsPool = ["cursed_ring_event"]
+
+[PossibleNeighbours]
+monastery = 0.1
+shore = 0.1
+swamps = 0.3
+caves = 0.3
+ruins = 0.5

@@ -1,0 +1,17 @@
+Id = "cursed_ring_event"
+Name = "A precious ring."
+Description = """
+Along your journeys, you come across an old ring on the ground. Once cleaned, it lusters with gold, but something about holding it feels... heavy.
+"""
+
+[[OptionDefinitions]]
+DisplayText = "put it on your finger."
+ResolutionText = "You take the item"
+Order = 1
+Effects = ["item:cursed_ring"]
+
+[[OptionDefinitions]]
+DisplayText = "toss it away"
+ResolutionText = "You think you hear the ring saying \"What a coward\". That's odd, isn't it?"
+Order = 2
+Conditions = ["honor:2"]

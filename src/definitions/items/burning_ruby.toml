@@ -1,0 +1,6 @@
+Id = "burning_ruby"
+Name = "Burning Ruby"
+Description = "A mountain's still heart. Commands wealth and destruction."
+Art = "simple_sword.png"
+IsCursed = true
+EffectsOnEquip = ["strength:+1"]

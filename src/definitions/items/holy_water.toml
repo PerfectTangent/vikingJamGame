@@ -1,0 +1,5 @@
+Id = "holy_water"
+Name = "Holy Water"
+Description = "Spiritual fortification in a bottle. Convenient."
+Art = "simple_sword.png"
+ConsumableCharges = 2

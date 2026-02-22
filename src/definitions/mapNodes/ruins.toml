@@ -1,0 +1,14 @@
+Kind = "ruins"
+Name = "Ruins"
+Description = "brick skeletons of civilization drape over eachother, brought down by the weight of time."
+Art = "ruins.png"
+EventsPool = ["cursed_ring_event"]
+
+[PossibleNeighbours]
+forest = 0.3
+wastes = 0.3
+weald = 0.3
+swamps = 0.2
+monastery = 0.1
+caves = 0.1
+shore = 0.1

@@ -1,0 +1,7 @@
+Id = "ambergris"
+Name = "Ambergris"
+Description = "A waxy substance found in the bowels of whales. Recognised to have rejuvenating properties."
+Art = "simple_sword.png"
+IsCursed = false
+ConsumableCharges = 1
+EffectsOnUse = ["strength:+1"]

@@ -1,0 +1,6 @@
+Id = "shimmer_shield"
+Name = "Shimmer Shield"
+Description = "A beautiful triangular shield. It flashes brilliantly when struck."
+Art = "simple_sword.png"
+IsCursed = false
+EffectsOnEquip = ["strength:+1", "honor:+1", "feats:+1"]

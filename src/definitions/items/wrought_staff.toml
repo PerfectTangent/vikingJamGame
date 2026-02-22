@@ -1,0 +1,6 @@
+Id = "wrought_staff"
+Name = "Wrought Staff"
+Description = "a Baleful metal staff. It hums with energy when swung around."
+Art = "simple_sword.png"
+IsCursed = true
+EffectsOnEquip = ["strength:+3" "honor:-2"]

@@ -1,0 +1,6 @@
+Id = "flaming_sword"
+Name = "Flaming Sword of Ruin"
+Description = "The blade responds to the emotions of the user; anger is as much a tool as a poison."
+Art = "simple_sword.png"
+IsCursed = true
+EffectsOnEquip = ["strength:+3"]

@@ -1,7 +1,7 @@
 Id = "cursed_ring"
 Name = "Cursed Ring of Greed"
 Description = "A golden ring that whispers promises of wealth. Once worn, it cannot be removed."
-Art = "cursed_ring.png"
+Art = "simple_sword.png"
 IsCursed = true
 EffectsOnEquip = ["gold:+5"]
-EffectsOnUse = ["gold:+1", "strength:-5"]
+EffectsOnUse = ["gold:+1", "strength:-1"]

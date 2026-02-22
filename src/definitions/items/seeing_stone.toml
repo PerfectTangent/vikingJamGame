@@ -1,0 +1,7 @@
+Id = "seeing_stone"
+Name = "Seeing Stone"
+Description = "A clear smooth orb that lets one peer into the unseen. Valuable, but some may call it unfair."
+Art = "simple_sword.png"
+IsCursed = true
+EffectsOnEquip = ["honor:-1"]
+EffectsOnUse = ["feat:+1", "honor-2"]

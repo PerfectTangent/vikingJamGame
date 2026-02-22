@@ -1,0 +1,25 @@
+Id = "bridge_troll_event"
+Name = "Toll Taker"
+Description = """
+Moving through the woods becomes exceedingly difficult in this area of forest. That, and the confusing sameness of it requires your band to stay close to the only winding path cutting through. For a time, you find nowhere suitable to make camp until the forest gives way to a steep cliff fall into fast flowing rapids. Fortunately, a bridge, made of sturdy stone, allows travel across. The moment you step up to the foot of the bridge, a chilling grumble comes from under the bridge.
+
+The ground shakes as a bridge troll emerges. He climbs over the edge and positions himself in your path. In broken and unpracticed tongue, he demands a (somewhat vague) fee for your warband to cross the bridge. You consider what’s the sensible response to this situation.
+"""
+
+[[OptionDefinitions]]
+DisplayText = "Pay a fair toll."
+ResolutionText = "The troll is enraged by your offering. He suddenly raises a tree branch and begins cleaving at anyone in range; starting with you. It doesn’t take long for the tribe to slay the troll, but it comes at a cost."
+Order = 1
+Conditions = ["gold:-5", "strength:-2", "population:-3"]
+
+[[OptionDefinitions]]
+DisplayText = "Pay a generous toll."
+ResolutionText = "the troll is satisfied, and steps out of the way. Your band crosses freely."
+Order = 2
+Conditions = ["gold:-15"]
+
+[[OptionDefinitions]]
+DisplayText = "challenge the troll"
+ResolutionText = "You challenge the troll to single combat. The troll smiles, before a tree branch comes swinging into your face. The next few seconds of your life are a blur as you struggle to fight the troll with a brutal concussion."
+Order = 3
+Conditions = ["strength:-3", "honor:+5"]

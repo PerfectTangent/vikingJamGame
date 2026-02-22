@@ -2,7 +2,7 @@ Kind = "shore"
 Name = "Shore"
 Description = "A rocky coastline where sea meets land. A good place to make landfall."
 Art = "shore.png"
-EventsPool = ["test_event"]
+EventsPool = ["cursed_ring_event"]
 
 [PossibleNeighbours]
 ocean = 0.1

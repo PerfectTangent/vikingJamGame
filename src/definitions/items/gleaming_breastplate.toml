@@ -1,0 +1,6 @@
+Id = "gleaming_breastplate"
+Name = "Gleaming Breastplate"
+Description = "Thorough protection, and also quite stunning to look at."
+Art = "simple_sword.png"
+IsCursed = false
+EffectsOnEquip = ["strength:+1"]

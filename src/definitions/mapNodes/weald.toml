@@ -1,0 +1,12 @@
+Kind = "weald"
+Name = "Weald"
+Description = "Ancient woods where the canopy blocks all light. Few paths lead out."
+Art = "weald.png"
+EventsPool = ["cursed_ring_event", "bridge_troll_event"]
+
+[PossibleNeighbours]
+forest = 0.5
+weald = 0.2
+swamps = 0.2
+caves = 0.2
+ruins - 0.2

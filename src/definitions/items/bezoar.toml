@@ -1,0 +1,5 @@
+Id = "bezoar"
+Name = "Bezoar"
+Description = "A magical stone found within a goat's stomach. A cure-all for toxins and poisons."
+Art = "simple_sword.png"
+IsCursed = false

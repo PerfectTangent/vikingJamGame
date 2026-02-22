@@ -2,13 +2,13 @@ Kind = "swamps"
 Name = "Swamps"
 Description = "Murky bogs that slow your advance. Disease and ambush are constant threats."
 Art = "swamps.png"
-EventsPool = ["test_event"]
+EventsPool = ["cursed_ring_event"]
 
 [PossibleNeighbours]
-village = 0.2
-monastery = 0.1
+village = 0.1
+sanctuary = 0.1
 forest = 0.4
-deep_forest = 0.2
-caves = 0.2
+weald = 0.2
+ruins = 0.2
 shore = 0.1
 swamps = 0.2

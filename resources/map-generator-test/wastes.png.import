@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmagcb5eal2mf"
-path="res://.godot/imported/swamps.png-d98f5d5ffe5cca6e59d8595673610cd5.ctex"
+uid="uid://kpd0klwtkdm1"
+path="res://.godot/imported/wastes.png-3543d2532128acda5f6366d92c3fb601.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/map-generator-test/swamps.png"
-dest_files=["res://.godot/imported/swamps.png-d98f5d5ffe5cca6e59d8595673610cd5.ctex"]
+source_file="res://resources/map-generator-test/wastes.png"
+dest_files=["res://.godot/imported/wastes.png-3543d2532128acda5f6366d92c3fb601.ctex"]
 
 [params]
 

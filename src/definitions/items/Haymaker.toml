@@ -1,0 +1,5 @@
+Id = "Haymaker"
+Name = "Haymaker"
+Description = "sharp and heavy."
+Art = "simple_sword.png"
+EffectsOnEquip = ["strength:+1"]

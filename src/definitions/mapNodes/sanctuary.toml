@@ -1,0 +1,10 @@
+Kind = "sanctuary"
+Name = "Sanctuary"
+Description = "A quiet, open stone structure, guarded by a simple cobblestone fencing. Said to be protected from deviltry."
+Art = "sanctuary.png"
+EventsPool = ["cursed_ring_event"]
+
+[PossibleNeighbours]
+forest = 0.2
+weald = 0.4
+swamps = 0.1

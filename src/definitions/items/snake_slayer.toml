@@ -1,0 +1,7 @@
+Id = "snake_slayer"
+Name = "Snake Slayer Blade"
+Description = "Perhaps the secret weapon needed for your final task."
+Art = "simple_sword.png"
+IsCursed = false
+EffectsOnEquip = ["strength:+4"]
+/// would like to make this give some of its benefit only when fighting the final boss, and maybe other serpent enemies.
