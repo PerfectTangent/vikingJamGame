@@ -1,4 +1,4 @@
-name: Test on Push and PR
+﻿name: Test on Push and PR
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   content-integrity-tests:
@@ -31,7 +32,115 @@ jobs:
         run: dotnet build VikingJamGame.sln --configuration Release --no-restore
 
       - name: Test Content Integrity
-        run: dotnet test tests/VikingJamGame.Tests/VikingJamGame.Tests.csproj --configuration Release --no-build --filter "FullyQualifiedName~VikingJamGame.Tests.Content" --verbosity normal
+        id: content_tests
+        continue-on-error: true
+        run: dotnet test tests/VikingJamGame.Tests/VikingJamGame.Tests.csproj --configuration Release --no-build --filter "FullyQualifiedName~VikingJamGame.Tests.Content" --logger "trx;LogFileName=content-integrity.trx" --results-directory TestResults --verbosity normal
+
+      - name: Build Content Integrity Markdown Report
+        if: always()
+        shell: pwsh
+        run: |
+          $reportPath = "content-integrity-report.md"
+          $trxPath = "TestResults/content-integrity.trx"
+
+          $reportLines = New-Object System.Collections.Generic.List[string]
+          $reportLines.Add("## Content Integrity Test Report")
+          $reportLines.Add("")
+
+          if (!(Test-Path $trxPath)) {
+            $reportLines.Add("- Status: FAILED")
+            $reportLines.Add("- Details: Could not find TRX file at '$trxPath'.")
+            Set-Content -Path $reportPath -Value ($reportLines -join "`n")
+            exit 0
+          }
+
+          [xml]$trx = Get-Content -Path $trxPath -Raw
+          $namespaceManager = New-Object System.Xml.XmlNamespaceManager($trx.NameTable)
+          $namespaceManager.AddNamespace("t", "http://microsoft.com/schemas/VisualStudio/TeamTest/2010")
+
+          $counter = $trx.SelectSingleNode("//t:ResultSummary/t:Counters", $namespaceManager)
+          $total = if ($counter -and $counter.total) { [int]$counter.total } else { 0 }
+          $passed = if ($counter -and $counter.passed) { [int]$counter.passed } else { 0 }
+          $failed = if ($counter -and $counter.failed) { [int]$counter.failed } else { 0 }
+          $status = if ($failed -gt 0) { "FAILED" } else { "PASSED" }
+
+          $reportLines.Add("- Status: $status")
+          $reportLines.Add("- Total: $total")
+          $reportLines.Add("- Passed: $passed")
+          $reportLines.Add("- Failed: $failed")
+          $reportLines.Add("")
+
+          if ($failed -gt 0) {
+            $failedResults = $trx.SelectNodes("//t:UnitTestResult[@outcome='Failed']", $namespaceManager)
+            foreach ($result in $failedResults) {
+              $testName = $result.testName
+              $messageNode = $result.SelectSingleNode("t:Output/t:ErrorInfo/t:Message", $namespaceManager)
+              $stackNode = $result.SelectSingleNode("t:Output/t:ErrorInfo/t:StackTrace", $namespaceManager)
+              $message = if ($messageNode) { $messageNode.InnerText.Trim() } else { "(no error message)" }
+              $stack = if ($stackNode) { $stackNode.InnerText.Trim() } else { "" }
+
+              $reportLines.Add("### `$testName`")
+              $reportLines.Add("")
+              $reportLines.Add("```text")
+              $reportLines.Add($message)
+              if ($stack) {
+                $reportLines.Add("")
+                $reportLines.Add("Stack trace:")
+                $reportLines.Add($stack)
+              }
+              $reportLines.Add("```")
+              $reportLines.Add("")
+            }
+          }
+
+          Set-Content -Path $reportPath -Value ($reportLines -join "`n")
+
+      - name: Publish Content Integrity Report to Job Summary
+        if: always()
+        run: cat content-integrity-report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment Content Integrity Report on PR
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- content-integrity-report -->';
+            const report = fs.readFileSync('content-integrity-report.md', 'utf8');
+            const body = `${marker}\n${report}`;
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const existing = comments.find(comment =>
+              comment.user?.type === 'Bot' && comment.body?.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body
+              });
+            }
+
+      - name: Fail if Content Integrity Tests Failed
+        if: steps.content_tests.outcome == 'failure'
+        run: exit 1
 
   behavior-tests:
     runs-on: ubuntu-latest
@@ -53,3 +162,4 @@ jobs:
 
       - name: Test Behavior
         run: dotnet test tests/VikingJamGame.Tests/VikingJamGame.Tests.csproj --configuration Release --no-build --filter "FullyQualifiedName!~VikingJamGame.Tests.Content" --verbosity normal
+
