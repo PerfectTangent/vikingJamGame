@@ -9,7 +9,6 @@
 [node name="Game" type="Node2D" unique_id=1346216071 node_paths=PackedStringArray("SceneSwitcher")]
 script = ExtResource("1_kqvf5")
 SceneSwitcher = NodePath("GodotSceneSwitcher")
-ForceInitialState = 1
 metadata/_custom_type_script = "uid://djyal22vnmgsa"
 
 [node name="GodotSceneSwitcher" type="Node" parent="." unique_id=1532306172]
